@@ -18,6 +18,7 @@ export const TodoForm: React.FC<Props> = ({ addTodo }: PropsWithChildren<Props>)
         type="text"
         value={todoText}
         onChange={(e) => setTodoText(e.target.value)}
+        placeholder="What Todo???"
       />
       <button type="submit" onClick={handleSubmit}>Add Todo</button>
     </form>
