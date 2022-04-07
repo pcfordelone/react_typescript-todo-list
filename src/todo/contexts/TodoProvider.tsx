@@ -1,66 +1,58 @@
-import { MouseEvent, useReducer } from "react";
-import { Todo, TodoState } from "../interfaces/todoInterfaces";
+import { useCallback, useState } from "react";
+import { Todo } from "../interfaces/todoInterfaces";
+import { TodosService } from "../services/TodoApiService";
 import { TodoContext } from "./TodoContext";
-import { todoReducer } from "./todoReducer";
 
 interface props {
   children: JSX.Element | JSX.Element[];
 }
-
-const INITIAL_STATE: TodoState = {
-  todoCount: 0,
-  todos: [
-    {
-      id: 1,
-      title: "Todo 01",
-      completed: true,
-    },
-    {
-      id: 2,
-      title: "Todo 02",
-      completed: false,
-    },
-  ],
-  completed: 0,
-  pending: 0,
-  errors: []
-};
 
 /**
  * Cria e Exporta Provider de Context.
  * Define propriedades obrigatórias e retorna Provider
  */
 export const TodoProvider = ({ children }: props) => {
-  const [todoState, dispatch] = useReducer(todoReducer, INITIAL_STATE);  
+  const [todos, setTodos] = useState<Todo[]>([]);
 
-  // Define ação chamada do Reducer
-  const addTodo = (todoText: string, e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const all = useCallback(async () => {
+    const { status, data } = await TodosService.all();
 
-    const todo: Todo = {
-      id: Math.floor(Date.now() * Math.random()),
-      title: todoText,
-      completed: false,
-    };
+    if (status !== 200) throw new Error();
 
-    dispatch({ type: "addTodo", payload: todo });
-  };
+    setTodos(data);
+  }, []);
 
-  // Define ação chamada do Reducer
-  const toggleTodo = (id: number) => {
-    dispatch({ type: "toggleTodo", payload: { id } });
-  };
+  const store = useCallback(  
+    async (todo: Pick<Todo, "title" | "completed" | "id">) => {
 
-  // Define ação chamada do Reducer
-  const deleteTodo = (id: number) => {
-    dispatch({ type: "deleteTodo", payload: { id } });
-  };
+      const { status } = await TodosService.store(todo);
+
+      if (status !== 201) throw new Error();
+
+      return todo;
+    },
+    []
+  );
+
+  const update = useCallback(async (todo: Todo, id: number) => {
+    const { status } = await TodosService.update(todo, id);
+
+    if (status !== 200) throw new Error();
+
+    return todo;
+  }, []);
+
+  const destroy = useCallback(async (id: number) => {
+    const { status } = await TodosService.destroy(id);
+
+    if (status !== 200) throw new Error();
+
+    return status;
+  }, []);
 
   // Retorna Provider e suas possíveis propriedades e ações
   return (
-    <TodoContext.Provider
-      value={{ todoState, addTodo, toggleTodo, deleteTodo }}
-    >
+    <TodoContext.Provider value={{ todos, all, store, destroy, update }}>
       {children}
     </TodoContext.Provider>
   );

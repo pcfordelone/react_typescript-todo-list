@@ -2,18 +2,19 @@ import { useContext } from "react"
 import { TodoContext } from "../contexts/TodoContext"
 
 export const useTodoContext = () => {
-  const { todoState, addTodo, toggleTodo, deleteTodo } = useContext(TodoContext);  
+  const { todos, all, store, destroy, update } = useContext(TodoContext);  
 
   return {
-      todos: todoState.todos,
+      todos: todos,
       states: {
-        todoCount: todoState.todos.length,
-        todoPending: todoState.todos.filter(todo => !todo.completed).length,
-        todoCompleted: todoState.todos.filter(todo => todo.completed).length,
-        errors: todoState.errors
+        todoCount: todos.length,
+        todoPending: todos.filter(todo => !todo.completed).length,
+        todoCompleted: todos.filter(todo => todo.completed).length,
+        // errors: errors
       },      
-      toggleTodo,
-      addTodo,
-      deleteTodo,    
+      all,
+      store,
+      destroy,
+      update
   }
 }

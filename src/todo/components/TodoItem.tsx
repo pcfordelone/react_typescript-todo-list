@@ -1,17 +1,38 @@
-import { useTodoContext } from "../hooks/useTodoContext";
+import { useCallback, useContext } from "react";
+import { TodoContext } from "../contexts/TodoContext";
 import { Todo } from "../interfaces/todoInterfaces";
 
 interface props {
   todo: Todo;
 }
 export const TodoItem = ({ todo }: props) => {
+  const { destroy, all, todos, update } = useContext(TodoContext);
 
-  const { toggleTodo, deleteTodo } = useTodoContext();
+  const handleDelete = useCallback(
+    async (id: number) => {
+      await destroy(id);
+      await all();
+    },
+    [destroy, all]
+  );
+
+  const handleToggle = useCallback(async (id: number) => {
+    const oldTodo = todos.find((oldTodo) => oldTodo.id === id) as Todo;
+    oldTodo.completed = !oldTodo.completed;
+
+    await update(oldTodo, id); 
+    await all();
+
+  }, [update, all, todos]);
 
   return (
-    <li>      
-      <label style={{ textDecoration: todo.completed ? 'line-through' : '' }}>          
-        <input type="checkbox" checked={ todo.completed } onChange={() => toggleTodo(todo.id as number)} />
+    <li>
+      <label style={{ textDecoration: todo.completed ? "line-through" : "" }}>
+        <input
+          type="checkbox"
+          checked={todo.completed}
+          onChange={() => handleToggle(todo.id as number)}
+        />
         {todo.title}
 
         <button
@@ -19,7 +40,7 @@ export const TodoItem = ({ todo }: props) => {
           style={{
             marginLeft: "10px",
           }}
-          onClick={ () => deleteTodo( todo.id as number) }
+          onClick={() => handleDelete(todo.id as number)}
         >
           Delete
         </button>

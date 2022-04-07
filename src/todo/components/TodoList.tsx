@@ -1,16 +1,19 @@
-import { useTodoContext } from "../hooks/useTodoContext";
+import { useContext, useEffect } from "react";
+import { TodoContext } from "../contexts/TodoContext";
 import { Todo } from "../interfaces/todoInterfaces";
 import { TodoItem } from "./TodoItem";
 
 export const TodoList = () => {
-  const { todos } = useTodoContext();
+  const { all, todos} = useContext(TodoContext);
 
-  console.log(todos);
-  
+  useEffect(() => {
+    all();    
+  }, [all]);
+
   return (
     <ul>
       {todos.map((todo: Todo) => (
-        <TodoItem key={ todo.id as number} todo={ todo } />
+        <TodoItem key={todo.id as number} todo={todo} />
       ))}
     </ul>
   );

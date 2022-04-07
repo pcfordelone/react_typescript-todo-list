@@ -1,9 +1,9 @@
-import { Todo } from "./todo/Todo"
+import { TodoComponent } from "./todo/TodoComponent"
 
 export const App = () => {
   return (
     <div>
-        <Todo />
+        <TodoComponent />
     </div>
   )
 }

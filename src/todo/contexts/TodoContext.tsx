@@ -1,15 +1,16 @@
-import { Context, createContext, MouseEvent } from "react";
-import { TodoState } from "../interfaces/todoInterfaces";
+import { Context, createContext } from "react";
+import { Todo } from "../interfaces/todoInterfaces";
 
 /**
  * Define as propriedades que poderão ser compartilhadas no Contexto
  * Define também o que será obrigatório ou não
  */  
 interface TodoContextProps {
-    todoState: TodoState,    
-    addTodo: ( todoText: string, e: MouseEvent<HTMLButtonElement> ) => void,
-    toggleTodo: ( id: number ) => void,
-    deleteTodo: ( id: number ) => void,    
+    todos: Todo[],
+    all: () => void,
+    store: (todo: Pick<Todo, 'title' | 'completed' | 'id'> ) => void,
+    destroy: (id: number) => void,
+    update: (todo: Todo, id: number) => void,            
 }
 
 // Criação e exportação do Context com definição do tipo de propriedades que serão passadas

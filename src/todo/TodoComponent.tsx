@@ -3,7 +3,7 @@ import { TodoList } from "./components/TodoList";
 import { TodoTitle } from "./components/TodoTitle";
 import { TodoProvider } from "./contexts/TodoProvider";
 
-export const Todo: React.FC = () => {
+export const TodoComponent: React.FC = () => {
   return (
     <TodoProvider>
       <TodoTitle />

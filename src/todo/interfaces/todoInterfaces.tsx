@@ -5,8 +5,8 @@ export interface Todo {
 }
 
 export interface Error {
-    code: number,
-    description: string
+    code?: number,
+    description?: string
 }
 
 export interface TodoState {
